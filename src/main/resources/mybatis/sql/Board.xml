@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.songjava.mvc.repository.BoardRepository">
+	
+	<resultMap type="kr.co.songjava.mvc.domain.Board" id="getListResultMap">
+		<result column="DEL_YN" property="delYn" typeHandler="kr.co.songjava.configuration.mybatis.typehandler.StringValueBooleanTypeHandler" />
+	</resultMap>
+	
+	<select id="getList" parameterType="kr.co.songjava.framework.data.domain.PageRequestParameter" resultMap="getListResultMap">
+		SELECT
+			B.BOARD_SEQ,
+			B.BOARD_TYPE,
+			B.TITLE,
+			B.CONTENTS,
+			B.REG_DATE,
+			B.DEL_YN
+		FROM T_BOARD B
+		<where>
+			<!-- 키워드 검색 -->
+			<if test="@org.apache.commons.lang3.StringUtils@isNotEmpty(parameter.keyword)">
+			AND B.TITLE LIKE CONCAT('%', #{parameter.keyword}, '%')
+			</if>
+			<!-- 게시물 종류 -->
+			<if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(parameter.boardType)">
+			AND B.BOARD_TYPE = #{parameter.boardType}
+			</if>
+			<!-- 게시판 종류 배열 검색 -->
+			<if test="@org.apache.commons.lang3.ObjectUtils@isNotEmpty(parameter.boardTypes)">
+			AND B.BOARD_TYPE IN(
+				<foreach collection="parameter.boardTypes" item="value" separator=",">
+				#{value}
+				</foreach>
+			)
+			</if>
+		</where>
+		ORDER BY B.REG_DATE DESC
+		LIMIT #{pageRequest.limit}, #{pageRequest.offset}
+	</select>
+	
+	<select id="get" parameterType="int" resultType="kr.co.songjava.mvc.domain.Board">
+		SELECT
+			B.BOARD_SEQ,
+			B.BOARD_TYPE,
+			B.TITLE,
+			B.CONTENTS,
+			B.REG_DATE
+		FROM T_BOARD B
+		WHERE B.BOARD_SEQ = #{boardSeq}
+	</select>	
+	
+	<insert id="save" parameterType="kr.co.songjava.mvc.parameter.BoardParameter" useGeneratedKeys="true" keyProperty="boardSeq">
+		INSERT INTO T_BOARD
+		(
+			TITLE,
+			BOARD_TYPE,
+			CONTENTS,
+			REG_DATE,
+			DEL_YN
+		)
+		VALUES
+		(
+			#{title},
+			#{boardType},
+			#{contents},
+			NOW(),
+			#{delYn, typeHandler=kr.co.songjava.configuration.mybatis.typehandler.StringValueBooleanTypeHandler}
+		)
+	</insert>	
+	
+	<insert id="saveList" parameterType="map">
+		INSERT INTO T_BOARD
+		(
+			TITLE,
+			BOARD_TYPE,
+			CONTENTS,
+			REG_DATE
+		)
+		VALUES
+		<foreach collection="boardList" item="board" separator=",">
+		(
+			#{title},
+			#{boardType},
+			#{contents},
+			NOW()
+		)
+		</foreach>
+	</insert>	
+	
+	<update id="update" parameterType="kr.co.songjava.mvc.parameter.BoardParameter">
+		UPDATE T_BOARD
+		SET
+			TITLE = #{title},
+			CONTENTS = #{contents}
+		WHERE BOARD_SEQ = #{boardSeq}
+	</update>		
+	
+	<delete id="delete" parameterType="int">
+		DELETE FROM T_BOARD
+		WHERE BOARD_SEQ = #{boardSeq}
+	</delete>				
+	
+</mapper>

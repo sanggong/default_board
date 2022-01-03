@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.songjava.mvc.repository.UploadFileRepository">
+
+	<select id="get" parameterType="int" resultType="kr.co.songjava.mvc.domain.UploadFile">
+	SELECT 
+	 	PATHNAME,
+		FILENAME,
+		ORIGINAL_FILENAME,
+		SIZE,
+		CONTENT_TYPE,
+		RESOURCE_PATHNAME,
+		REG_DATE
+	FROM T_UPLOAD_FILE UF
+	WHERE UF.UPLOAD_FILE_SEQ = #{uploadFileSeq}
+	</select>
+	<insert id="save" parameterType="kr.co.songjava.mvc.parameter.UploadFileParameter">
+	INSERT INTO T_UPLOAD_FILE
+	(
+		PATHNAME,
+		FILENAME,
+		ORIGINAL_FILENAME,
+		SIZE,
+		CONTENT_TYPE,
+		RESOURCE_PATHNAME,
+		REG_DATE
+	)
+	VALUES
+	(
+		#{pathname},
+		#{filename},
+		#{originalFilename},
+		#{size},
+		#{contentType},
+		#{resourcePathname},
+		NOW()
+	)
+	
+	</insert>
+</mapper>

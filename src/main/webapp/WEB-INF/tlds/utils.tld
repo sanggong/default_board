@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<taglib version="2.0" xmlns="http://java.sun.com/xml/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">
+
+	<description>JSTL 1.1 functions library</description>
+    <display-name>JSTL functions</display-name>
+    <tlib-version>1.1</tlib-version>
+    <short-name>utils</short-name>
+
+	<function>
+		<name>isSelected</name>
+		<function-class>kr.co.songjava.framework.util.EnumUtils</function-class>
+		<function-signature>boolean isSelected(kr.co.songjava.mvc.domain.BaseCodeLabelEnum[], kr.co.songjava.mvc.domain.BaseCodeLabelEnum)</function-signature>
+	</function>
+</taglib>
